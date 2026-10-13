@@ -1,0 +1,5 @@
+import { money } from '../utils.js';
+export default function OrdersTable({ orders, onUpdate, role }) {
+  if (!orders?.length) return <p className="muted-note">No orders to display yet.</p>;
+  return <div className="table-wrap"><table><thead><tr><th>Order</th><th>Date</th><th>Items</th><th>Total</th><th>Status</th>{role !== 'customer' && <th>Update</th>}</tr></thead><tbody>{orders.map(o => <tr key={o._id}><td>#{o._id.slice(-7).toUpperCase()}</td><td>{new Date(o.createdAt).toLocaleDateString()}</td><td>{o.items?.reduce((n, i) => n + i.quantity, 0) || 0}</td><td>{money(o.total)}</td><td><span className={`status status-${o.status}`}>{o.status}</span></td>{role !== 'customer' && <td><select value={o.status} onChange={e => onUpdate(o._id, e.target.value)}><option value="placed">Placed</option><option value="processing">Processing</option><option value="shipped">Shipped</option><option value="delivered">Delivered</option><option value="cancelled">Cancelled</option></select></td>}</tr>)}</tbody></table></div>;
+}
